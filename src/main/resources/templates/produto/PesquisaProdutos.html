@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="~{layout/LayoutPadrao}"
+	xmlns:tron="http://tron.ricardo.com.br"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisa de produtos</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de produtos</h1>
+				</div>
+				
+				<div class="col-xs-2" sec:authorize="hasRole('ROLE_CADASTRAR_PRODUTO')" >
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/produtos/novo}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo produto</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${produtoFilter}">
+			<div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="codigo">Codigo</label>
+					<input type="text" class="form-control" id="codigo" autofocus="autofocus" th:field="*{codigo}"/>
+				</div>
+				
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="nome">Nome</label>
+					<input type="text" class="form-control" id="nome" th:field="*{nome}"/>
+				</div>
+				</div>
+				<div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="estilo">Fornecedor</label>
+					<select id="estilo" class="form-control" th:field="*{fornecedor}">
+	                    <option value="">Todos os fornecedores</option>
+	                    <option th:each="fornecedor : ${fornecedores}" th:text="${fornecedor.nome}" th:value="${fornecedor.id}"></option>
+	                </select>
+				</div>
+				
+
+				<div class="col-sm-6  form-group">
+					<label for="valorDe">Valor unitário</label>
+					<div class="form-inline">
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorDe" th:field="*{valorDe}"/>
+						<label for="valorAte" class="aw-form-label-between">até</label>
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorAte" th:field="*{valorAte}"/>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th class="table-produtos-col-codigo">
+							<tron:order page="${pagina}" field="codigo" text="Codigo"/>
+						</th>
+						<th class="table-produtos-col-nome">
+							<tron:order page="${pagina}" field="nome" text="Nome"/>
+						</th>
+						
+						<th class="table-produtos-col-fornecedor">
+							<tron:order page="${pagina}" field="fornecedor" text="Fornecedor"/>
+						</th>
+						
+
+						<th class="table-produtos-col-nome">
+							<tron:order page="${pagina}" field="precoVenda" text="Preço"/>
+						</th>
+						
+						
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="produto : ${pagina.conteudo}">
+						<td class="text-left" th:text="${produto.codigo}">AA1234</td>
+						<td th:text="${produto.nome}">Produto</td>
+						<td th:text="${produto.fornecedor.nome}">Volvo</td>
+						<td class="text-left" th:text="|R$ ${produto.precoVenda}|">R$ 8.00</td>
+						<td class="text-center">
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+							sec:authorize="hasRole('ROLE_ALTERAR_PRODUTO')"
+									th:href="@{/produtos/{id}(id=${produto.id})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>							
+							<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" 
+							sec:authorize="hasRole('ROLE_EXCLUIR_PRODUTO')"
+							        href="#"  
+									data:url="@{/produtos/{id}(id=${produto.id})}"
+									data:objeto="${produto.nome}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nenhum produto encontrado</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="col-sm-12  text-center" th:if="${not pagina.vazia}">
+			<nav>
+				<ul class="pagination  pagination-sm" th:with="paginaAtual=${pagina.atual}">
+					<li th:class="${pagina.primeira} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual - 1)}" th:remove="${pagina.primeira} ? tag"><span>&laquo;</span></a>
+					</li>
+					<th:block th:each="p : ${#numbers.sequence(1, pagina.total)}" th:with="numeroPagina=${p - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${pagina.urlParaPagina(numeroPagina)}">[[${p}]]</a>
+						</li>
+					</th:block>
+					
+					<li th:class="${pagina.ultima} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual + 1)}" th:remove="${pagina.ultima} ? tag"><span>&raquo;</span></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		
+	</div>
+	
+</section>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"	
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="'layout/LayoutPadrao'"
+	xmlns:tron="http://tron.ricardo.com.br">
+	
+<head>
+	<title>Home</title>
+	
+	<style type="text/css">
+	#imginicio {
+		position:absolute;
+		left: 37%;
+		top: 180px;
+		margin-left:-110px;
+		margin-top:-40px;
+		}
+</style>
+	
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+
+	<img alt="TRON" id="imginicio" th:src="@{/images/home.png}"/>
+	
+	
+</section>
+
+<th:block layout:fragment="javascript-extra">
+</th:block>
+		
+</body>
+</html>

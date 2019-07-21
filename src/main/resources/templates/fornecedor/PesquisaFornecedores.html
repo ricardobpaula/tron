@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="~{layout/LayoutPadrao}"
+	xmlns:tron="http://tron.ricardo.com.br"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisa de fonecedores</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de fornecedores</h1>
+				</div>
+				
+				<div class="col-xs-2" sec:authorize="hasRole('ROLE_CADASTRAR_FORNECEDOR')">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/fornecedores/novo}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo fornecedor</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${fornecedorFilter}">
+			<div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="nome">Nome</label>
+					<input type="text" class="form-control" id="nome" autofocus="autofocus" th:field="*{nome}"/>
+				</div>
+				
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="razaoSocial">Razão Social</label>
+					<input type="text" class="form-control" id="razaoSocial" th:field="*{razaoSocial}"/>
+				</div>
+				</div>
+				<div class="row">
+				
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="cnpj">CNPJ</label>
+					<input type="text" class="form-control js-cep" id="cnpj" th:field="*{cnpj}"/>
+				</div>
+
+				
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th>
+							<tron:order page="${pagina}" field="nome" text="Nome"/>
+						</th>
+						<th >
+							<tron:order page="${pagina}" field="razaoSocial" text="Razão Social"/>
+						</th>
+						
+						<th >
+							<tron:order page="${pagina}" field="cnpj" text="CNPJ"/>
+						</th>
+					
+						
+						
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="fornecedor : ${pagina.conteudo}">
+						<td class="text-left" th:text="${fornecedor.nome}">Nome</td>
+						<td th:text="${fornecedor.razaoSocial}">razao</td>
+						<td th:text="${fornecedor.cnpj}">CNPJ</td>
+
+						<td class="text-center" >
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+							sec:authorize="hasRole('ROLE_ALTERAR_FORNECEDOR')" 
+									th:href="@{/fornecedores/{id}(id=${fornecedor.id})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>							
+							<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" 
+							sec:authorize="hasRole('ROLE_EXCLUIR_FORNECEDOR')"
+							        href="#"  
+									data:url="@{/fornecedores/{id}(id=${fornecedor.id})}"
+									data:objeto="${fornecedor.nome}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nenhum fornecedor encontrado</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="col-sm-12  text-center" th:if="${not pagina.vazia}">
+			<nav>
+				<ul class="pagination  pagination-sm" th:with="paginaAtual=${pagina.atual}">
+					<li th:class="${pagina.primeira} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual - 1)}" th:remove="${pagina.primeira} ? tag"><span>&laquo;</span></a>
+					</li>
+					<th:block th:each="p : ${#numbers.sequence(1, pagina.total)}" th:with="numeroPagina=${p - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${pagina.urlParaPagina(numeroPagina)}">[[${p}]]</a>
+						</li>
+					</th:block>
+					
+					<li th:class="${pagina.ultima} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual + 1)}" th:remove="${pagina.ultima} ? tag"><span>&raquo;</span></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		
+	</div>
+	
+</section>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Tron Oficina</title>
+
+  	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/faetec.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
+	
+	<link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+
+
+</head>
+
+<body class="aw-layout-simple-page">
+  <div class="aw-layout-simple-page__container">
+
+<form th:action="@{/login}" method="POST">
+	<div class="aw-simple-panel">
+	
+	<img alt="TronOficina" th:src="@{/images/logo-gray.png}">
+		
+		<div class="aw-simple-panel__message">
+			Por favor, faça o login.
+		</div>
+		
+		<div class="aw-simple-panel__message is-error" th:if="${#bools.isTrue(param.error)}" >
+			O Login e/ou senha não conferem	
+		</div>
+		
+		<div class="aw-simple-panel__box">
+			<div class="form-group  has-feedback">
+				<input type="text"  name="username" class="form-control  input-lg" placeholder="Seu login" autofocus="autofocus"/>
+				<span class="glyphicon  glyphicon-envelope  form-control-feedback"></span>
+			</div>
+			
+			<div class="form-group  has-feedback">
+				<input type="password" name="password" class="form-control  input-lg" placeholder="Sua senha"/>
+				<span class="glyphicon  glyphicon-lock  form-control-feedback"></span>
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn  btn-primary  btn-lg  aw-btn-full-width">Entrar</button>
+			</div>
+			</div>
+	</div>
+</form>
+
+  </div>
+
+<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
+<script th:src="@{/layout/javascripts/faetec.min.js}"></script>
+</body>
+</html>

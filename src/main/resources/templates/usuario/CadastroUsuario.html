@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"	
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="'layout/LayoutPadrao'"
+	xmlns:tron="http://tron.ricardo.com.br"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Cadastro de Usuario</title>
+	
+	<style type="text/css">.checkbox input[type="checkbox"]:checked + input + label::after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+    }
+    </style> 
+
+	
+	
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-10">
+					<h1 th:if="${usuario.novo}">Cadastro de usuario</h1>
+					<h1 th:unless="${usuario.novo}" th:text="|Edição de usúario - ${usuario.nome}|">Edição de Usuario</h1>
+				</div>
+			
+				<div class="col-sm-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/usuarios}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+
+		<th:block th:include="fragments/MensagemSucesso"></th:block>
+
+		<form method="POST" th:object="${usuario}" class="form-vertical  js-form-loading" 
+		th:action="${usuario.novo} ? @{/usuarios/novo} : @{/usuarios/{id}(id=${usuario.id})}">
+			<th:block th:include="fragments/MensagensErroValidacao"></th:block>
+			
+			<input type="hidden" th:field="*{id}"/>
+	
+			<div class="row">
+				<div class="col-sm-12  form-group" tron:classforerror="nome">
+					<label for="nome" class="control-label">Nome</label>
+					<input id="nome" type="text" class="form-control" th:field="*{nome}"/>
+				</div>
+
+				
+
+				
+			</div>
+			
+			
+			<div class="row">
+			
+			<div class="col-sm-6  form-group" tron:classforerror="login">
+					<label for="login" class="control-label">Login</label>
+					<input id="login" type="text" class="form-control" th:field="*{login}"/>
+				</div>
+			
+			<div class="col-sm-6  form-group" tron:classforerror="email">
+				<label for="email" class="control-label">Email</label>
+				<input id="email" type="text" class="form-control" th:field="*{email}"/>
+			</div>
+			
+			</div>
+			
+			<div class="row">
+				<div class="form-group col-sm-5 " tron:classforerror="senha">
+					<label for="senha" class="control-label"> Senha</label>
+					<input type="password" class="form-control" id="senha" th:field="*{senha}"/>
+				</div>
+				
+					<div class="form-group col-sm-5 " tron:classforerror="confirmacaoSenha">
+					<label for="confirmacaoSenha" class="control-label">Confirmação de Senha</label>
+					<input type="password" class="form-control" id="confirmacaoSenha" th:field="*{confirmacaoSenha}" />
+				</div>
+				
+				<div class="form-grupo col-sm-2" th:if="${#authentication.principal.usuario.id != usuario.id}">
+				<label class="control-label"> Status</label>
+				<div>
+					<input type="checkbox" checked data-toggle="toggle" 
+						data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{ativo}">
+				</div>
+			</div>
+	
+			</div>
+			
+			<div class="row" sec:authorize="hasRole('ROLE_ALTERAR_USUARIO')">
+				<div class="form-group  col-sm-6  " tron:classforerror="grupos">
+					<label class="control-label">Grupos</label> 
+					<div>
+						<th:block th:each="grupo : ${grupos}">
+	  						<div class="checkbox  checkbox-inline"> 
+		    					<input type="checkbox" th:value="${grupo.id}" th:field="*{grupos}"/>
+		    					<label th:for="${#ids.prev('grupos')}" th:text="${grupo.nome}">Administrador</label>
+	    					</div>
+	    				</th:block>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+						
+			<div class="form-group col-sm-5">
+				<button class="btn  btn-primary" type="submit">Salvar</button>
+				<button class="btn  btn-primary" type="reset">Limpar</button>
+			</div>
+			</div>
+	
+		</form>
+	</div>
+	
+</section>
+
+
+
+<th:block layout:fragment="javascript-extra">
+<script th:src="@{/javascripts/vendors/bootstrap-switch.min.js}"></script>
+	<script>
+		$('.js-status').bootstrapSwitch();
+	</script>
+</th:block>
+		
+</body>
+</html>

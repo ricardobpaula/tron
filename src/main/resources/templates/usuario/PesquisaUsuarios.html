@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="~{layout/LayoutPadrao}"
+	xmlns:tron="http://tron.ricardo.com.br"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisa de Usuarios</title>
+	
+	<style type="text/css">.checkbox input[type="checkbox"]:checked + input + label::after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+    }
+    </style> 
+	
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de Usuarios</h1>
+				</div>
+				
+				<div class="col-xs-2" sec:authorize="hasRole('ROLE_CADASTRAR_USUARIO')">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/usuarios/novo}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo usuário</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${usuarioFilter}">
+			<div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="nome">Nome</label>
+					<input type="text" class="form-control" id="nome" autofocus="autofocus" th:field="*{nome}"/>
+				</div>
+				
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="login">Login</label>
+					<input type="text" class="form-control" id="login" th:field="*{login}"/>
+				</div>
+				</div>
+				<div class="row">
+				
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="email">Email</label>
+					<input type="text" class="form-control" id="email" th:field="*{email}"/>
+				</div>
+
+				
+			</div>
+			
+			<div class="row">
+			
+			
+					<div class="form-group  col-sm-12  " tron:classforerror="grupos">
+					<label class="control-label">Grupos</label> 
+					<div>
+						<th:block th:each="grupo : ${grupos}">
+	  						<div class="checkbox  checkbox-inline"> 
+		    					<input type="checkbox" th:value="${grupo.id}" th:field="*{grupos}"/>
+		    					<label th:for="${#ids.prev('grupos')}" th:text="${grupo.nome}">Administrador</label>
+	    					</div>
+	    				</th:block>
+					</div>
+				</div>
+			
+			
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="aw-datatable-toolbar">
+		
+		</div>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th >
+							<tron:order page="${pagina}" field="nome" text="Nome"/>
+						</th>
+						<th >
+							<tron:order page="${pagina}" field="login" text="Login"/>
+						</th>
+						
+						<th >
+							<tron:order page="${pagina}" field="email" text="E-mail"/>
+						</th>
+						
+						<th >
+							<tron:order page="${pagina}" field="grupos" text="Grupo"/>
+						</th>
+					<th >
+							<tron:order page="${pagina}" field="ativo" text="Status"/>
+						</th>
+					
+						
+						
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="usuario : ${pagina.conteudo}">
+						<td class="text-left" th:text="${usuario.nome}">Nome</td>
+						<td th:text="${usuario.login}">Login</td>
+						<td th:text="${usuario.email}">E-mail</td>
+						<td>
+							<span th:each="grupo : ${usuario.grupos}" th:text="|${grupo.nome}${grupoStat.last ? '' : ', '}|" ></span>						
+						</td>
+						<td th:text="${usuario.ativo} ? Ativo : Inativo">Ativo</td>
+
+						<td class="text-center" >
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+							sec:authorize="hasRole('ROLE_ALTERAR_USUARIO')" 
+									th:href="@{/usuarios/{id}(id=${usuario.id})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>							
+							
+							<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" 
+							sec:authorize="hasRole('ROLE_EXCLUIR_USUARIO')"
+							        href="#"  
+									data:url="@{/usuarios/{id}(id=${usuario.id})}"
+									data:objeto="${usuario.nome}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+							
+							 
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nenhum usuario encontrado</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="col-sm-12  text-center" th:if="${not pagina.vazia}">
+			<nav>
+				<ul class="pagination  pagination-sm" th:with="paginaAtual=${pagina.atual}">
+					<li th:class="${pagina.primeira} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual - 1)}" th:remove="${pagina.primeira} ? tag"><span>&laquo;</span></a>
+					</li>
+					<th:block th:each="p : ${#numbers.sequence(1, pagina.total)}" th:with="numeroPagina=${p - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${pagina.urlParaPagina(numeroPagina)}">[[${p}]]</a>
+						</li>
+					</th:block>
+					
+					<li th:class="${pagina.ultima} ? disabled">
+						<a th:href="${pagina.urlParaPagina(paginaAtual + 1)}" th:remove="${pagina.ultima} ? tag"><span>&raquo;</span></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		
+	</div>
+	
+</section>
+</body>
+</html>
