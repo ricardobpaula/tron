@@ -1,14 +1,14 @@
-#Tron Project
+# Tron Project
 
-<h2>Projeto de controle de estoque para oficinas:</h2>
+## Projeto de controle de estoque para oficinas
 
-<p> Projeto em desenvolvimento iniciado no curso tecnico de informatica pela Fundação de Apoio à Escola Técnica (FAETEC) </p>
+> Projeto em desenvolvimento iniciado no Curso Técnico de informatica na Fundação de Apoio à Escola Técnica (FAETEC)
 
-<h2> Tecnologias utilizadas: </h2>
+## O que eu uso nesse projeto?
 
--Java juntamente com SpringMVC
+-Java with SpringMVC
 
--SpringData
+-Spring Data
 
 -Spring Security
 
@@ -20,18 +20,19 @@
 
 -MySQL
 
-Controle de dependências do projeto foi realizado com Maven.
-<h2> Instruções para Execução do projeto: </h2>
+- Maven
 
-<p> Criar a base de dados com o nome "trondb" utilizando Mysql( Versão recomendada 5.7) logo em seguida executando os scripts sql localizados em /src/main/resources/db/migration/ </p>
+## Como usar a aplicação
 
-<p> Em seguida copiar os seguintes arquivos para pasta lib do tomcat localizados na pasta /lib do projeto (versão recomendada tomcat 8.5):
+> Criar a base de dados com o nome `"trondb"` utilizando Mysql ( Versão 5.7) logo em seguida executando os scripts sql localizados em `/src/main/resources/db/migration/` 
 
--c3p0-0.9.5.2.jar
+> Em seguida copiar os seguintes arquivos para pasta lib do Apache Tomcat (Versão 8.5) localizados em `/lib` 
 
--mchange-commons-java-0.2.11.jar
+- `c3p0-0.9.5.2.jar`
 
--mysql-connector-java-5.1.39.jar </p>
+- `mchange-commons-java-0.2.11.jar`
+
+- `mysql-connector-java-5.1.39.jar`
 
 
 
