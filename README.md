@@ -6,19 +6,19 @@
 
 ## O que eu uso nesse projeto?
 
--Java with SpringMVC
+- Java with SpringMVC
 
--Spring Data
+- Spring Data
 
--Spring Security
+- Spring Security
 
--Hibernate
+- Hibernate
 
--Thymeleaf
+- Thymeleaf
 
--Bootstrap
+- Bootstrap
 
--MySQL
+- MySQL
 
 - Maven
 
